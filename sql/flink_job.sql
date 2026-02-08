@@ -71,6 +71,15 @@ select count(*), status from KafkaRideUpdates group by status limit 5;
 select * from KafkaRideUpdates where timestamp_ms in (select max(timestamp_ms) from KafkaRideUpdates) and status ='OPERATING'
 order by waitTime desc limit 50;
 
+SELECT *
+FROM (
+  SELECT *,
+    ROW_NUMBER() OVER (PARTITION BY window_start, window_end ORDER BY waitTime DESC) as row_num
+  FROM TABLE(
+    TUMBLE(TABLE KafkaRideUpdates, DESCRIPTOR(event_time), INTERVAL '5' MINUTES))
+)
+WHERE row_num <= 5;
+
 
 -- 3. Define the Iceberg Sink Table
 CREATE TABLE ranked_wait_times (
