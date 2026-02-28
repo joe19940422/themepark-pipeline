@@ -49,4 +49,4 @@ RUN wget https://repo1.maven.org/maven2/org/apache/flink/flink-sql-connector-kaf
     -O $FLINK_HOME/lib/flink-sql-connector-kafka-${KAFKA_CONNECTOR_VERSION}-1.18.jar
 
 # Copy the Flink SQL script
-COPY sql/flink_job.sql /tmp/flink_job.sql
+# COPY sql/flink_job.sql /tmp/flink_job.sql

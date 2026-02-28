@@ -48,7 +48,8 @@ export const attractionImages = {
   'Challenge Trails at Camp Discovery': 'https://static.shanghaidisneyresort.com/tridion/prod/en/system/images/shdr-att-camp-discovery-challenge-trails-new-b_tcm1871-239011.jpg',
   'Slinky Dog Spin': 'https://static.shanghaidisneyresort.com/tridion/prod/zh-cn/system/images/shdr-att-slinky-dog-spin-new-b_tcm1874-239320.jpg',
   'Alice in Wonderland Maze': 'https://static.shanghaidisneyresort.com/tridion/prod/en/system/images/shdr-att-alice-new-b_tcm1871-239483.jpg',
-  'Once Upon a Time Adventure': 'https://static.shanghaidisneyresort.com/tridion/prod/en/system/images/shdr-att-once-upon-time-adventure-hero-new_tcm1871-115130.jpg'
+  'Once Upon a Time Adventure': 'https://static.shanghaidisneyresort.com/tridion/prod/en/system/images/shdr-att-once-upon-time-adventure-hero-new_tcm1871-115130.jpg',
+  'Selfie Spot with Spider-Man': 'https://static.shanghaidisneyresort.com/tridion/prod/zh-cn/system/images/shdr-char-characters-marvel-universe-hero-new_tcm1874-153400.jpg'
 };
 
 export const getAttractionImage = (name) => {

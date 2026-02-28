@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './ThemePark.css';
-import { getAttractionImage } from './attractionImages';
-import { attractionNames } from './attractionNames';
+import { getAttractionImage } from './attractionImages.js';
+import { attractionNames } from './attractionNames.js';
 
 function ThemeParkDashboard() {
   const [attractions, setAttractions] = useState([]);
