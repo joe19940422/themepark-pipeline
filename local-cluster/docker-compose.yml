@@ -45,7 +45,7 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
     volumes:
-      # Persist Kafka log data to a local directory
+      # Persist Kafka log data to a local-cluster directory
       - kafka_data:/var/lib/kafka/data
 
   # 2. MinIO (The Iceberg Data Storage - S3 compatible)
@@ -65,8 +65,8 @@ services:
   # 3. Flink JobManager (The Processor Coordinator)
   flink-jobmanager:
     build:
-      context: .
-      dockerfile: ./flink/Dockerfile
+      context: ..
+      dockerfile: ../flink/Dockerfile
     container_name: flink-jobmanager
     networks:
       - themepark-network
@@ -103,8 +103,8 @@ services:
   # 4. Flink TaskManager (The Worker)
   flink-taskmanager:
     build:
-      context: .
-      dockerfile: ./flink/Dockerfile
+      context: ..
+      dockerfile: ../flink/Dockerfile
     image: flink-custom
     container_name: flink-taskmanager
     networks:

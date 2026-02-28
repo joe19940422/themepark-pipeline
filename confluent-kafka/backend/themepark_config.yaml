@@ -1,0 +1,13 @@
+kafka:
+  bootstrap.servers: 'pkc-921jm.us-east-2.aws.confluent.cloud:9092'
+  security.protocol: "SASL_SSL"
+  sasl.mechanism: "PLAIN"
+  sasl.username: '***'
+  sasl.password: 'cfltVbjdHI+9VfTj++6gQ39Py81mIrpSU6rliGlJr5RDOOSCUorb8fCTM9iiXmgA'
+  schema_registry_url: 'https://psrc-19262jq.us-east-2.aws.confluent.cloud'
+  schema_registry_api_key: '**'
+  schema_registry_secret: 'cfltSgvgvXM2NVlSi7JohpNp7EDfpWDrFSX8XEYo7m8uwV3ufvVrhV7Z/4d5vw9w'
+  topics:
+    raw_data: "themepark_raw"
+    avg_waittime: "attraction_avg_waittime"
+  consumer_group: "themepark-consumer-v8"

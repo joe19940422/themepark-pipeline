@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎢 Theme Park Wait Times</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .status {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .status.connected { border-left: 5px solid #10b981; }
+        .status.error { border-left: 5px solid #ef4444; }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0,0,0,0.15);
+        }
+        .card h3 {
+            color: #1f2937;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+        .wait-time {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 10px 0;
+        }
+        .label {
+            color: #6b7280;
+            font-size: 0.9em;
+        }
+        .empty {
+            text-align: center;
+            color: white;
+            font-size: 1.2em;
+            padding: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎢 Theme Park Wait Times</h1>
+        
+        <div id="status" class="status">
+            <strong>Status:</strong> <span id="statusText">Connecting...</span>
+        </div>
+
+        <div id="attractions" class="grid">
+            <div class="empty">Waiting for data...</div>
+        </div>
+    </div>
+
+    <script>
+        const statusEl = document.getElementById('status');
+        const statusText = document.getElementById('statusText');
+        const attractionsEl = document.getElementById('attractions');
+
+        // Connect to SSE endpoint
+        const eventSource = new EventSource('http://localhost:8002/api/analytics/stream');
+
+        eventSource.onopen = () => {
+            statusEl.className = 'status connected';
+            statusText.textContent = 'Connected ✓';
+        };
+
+        eventSource.onerror = () => {
+            statusEl.className = 'status error';
+            statusText.textContent = 'Connection error ✗';
+        };
+
+        eventSource.onmessage = (event) => {
+            try {
+                const message = JSON.parse(event.data);
+                
+                if (message.type === 'analytics' && message.data) {
+                    renderAttractions(message.data);
+                }
+            } catch (e) {
+                console.error('Parse error:', e);
+            }
+        };
+
+        function renderAttractions(attractions) {
+            if (!attractions || attractions.length === 0) {
+                attractionsEl.innerHTML = '<div class="empty">No data available yet. Wait 5 minutes for first API poll...</div>';
+                return;
+            }
+
+            // Sort by wait time (highest first)
+            const sorted = [...attractions].sort((a, b) => (b.avg_waittime || 0) - (a.avg_waittime || 0));
+
+            attractionsEl.innerHTML = sorted.map(attr => `
+                <div class="card">
+                    <h3>${attr.name || attr.entityId}</h3>
+                    <div class="wait-time">${Math.round(attr.avg_waittime || 0)} min</div>
+                    <div class="label">Average Wait Time</div>
+                </div>
+            `).join('');
+        }
+
+        // Fetch initial data
+        fetch('http://localhost:8002/api/attractions')
+            .then(r => r.json())
+            .then(data => {
+                if (data.attractions) {
+                    renderAttractions(data.attractions);
+                }
+            })
+            .catch(e => console.error('Fetch error:', e));
+    </script>
+</body>
+</html>
