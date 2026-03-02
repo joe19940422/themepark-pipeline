@@ -33,15 +33,14 @@ CREATE TABLE attraction_avg_waittime (
     'value.format' = 'json'
 );
 
--- Calculate 20-minute sliding window average wait times
+-- Calculate 20-minute sliding window (updates every 5 minutes)
 INSERT INTO attraction_avg_waittime
 SELECT
   entityId,
-  REGEXP_REPLACE(name, '“|”|’', '') AS name,
-  CASE 
-    WHEN status = 'OPERATING' THEN AVG(CAST(waitTime AS DOUBLE))
-    ELSE -1.0
-  END AS avg_waittime
-FROM themepark_raw
-WHERE event_time > CURRENT_TIMESTAMP - INTERVAL '20' MINUTES
-GROUP BY entityId, REGEXP_REPLACE(name, '“|”|’', ''), status;
+  REGEXP_REPLACE(name, '“|”|’','') AS name,
+  AVG(CAST(waitTime AS DOUBLE)) AS avg_waittime
+FROM TABLE(
+  HOP(TABLE themepark_raw, DESCRIPTOR(event_time), INTERVAL '5' MINUTES, INTERVAL '20' MINUTES)
+)
+WHERE status = 'OPERATING'
+GROUP BY entityId, REGEXP_REPLACE(name, '“|”|’', ''), window_start, window_end;
