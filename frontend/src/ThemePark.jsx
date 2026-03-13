@@ -143,8 +143,8 @@ function ThemeParkDashboard() {
                     className="wait-time"
                     style={{ color: getWaitTimeColor(attr.avg_waittime) }}
                   >
-                    {Math.round(attr.avg_waittime || 0)}
-                    <span className="unit">min</span>
+                    {attr.avg_waittime === -1 ? 'CLOSED' : Math.round(attr.avg_waittime || 0)}
+                    {attr.avg_waittime !== -1 && <span className="unit">min</span>}
                   </div>
                   <div className="label">Average Wait Time</div>
                 </div>

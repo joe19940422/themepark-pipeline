@@ -25,7 +25,7 @@ class ThemeParkConsumer:
                 self.topic,
                 bootstrap_servers=self.kafka_broker,
                 group_id=self.group_id,
-                auto_offset_reset='earliest',
+                auto_offset_reset='latest',
                 enable_auto_commit=True,
                 value_deserializer=lambda m: json.loads(m.decode('utf-8'))
             )
